@@ -1,0 +1,43 @@
+version: '3'
+services:
+  cscart:
+    container_name: cscart
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    networks:
+      - cscart-net
+    depends_on:
+      - cscartDB
+    volumes:
+      - ./:/var/www/html
+    environment:
+      - MYSQL_HOST=cscartDB
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=cscart
+      - MYSQL_USER=cscart_user
+      - MYSQL_PASSWORD=cscart_password
+
+  cscartDB:
+    image: mysql:5.7
+    container_name: cscartDB
+    ports:
+      - 3306:3306
+    networks:
+      - cscart-net
+    environment:
+      - MYSQL_DATABASE=cscart
+      - MYSQL_USER=cscart_user
+      - MYSQL_PASSWORD=cscart_password
+      - MYSQL_ROOT_PASSWORD=root_password
+    volumes:
+      - cscart-mysql-data:/var/lib/mysql
+
+volumes:
+  cscart-mysql-data:
+
+networks:
+  cscart-net:
+    driver: bridge
