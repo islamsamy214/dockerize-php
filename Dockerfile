@@ -9,17 +9,19 @@ RUN apt-get update && apt-get install -y libcurl4-openssl-dev
 
 # Install required PHP extensions and their dependencies
 RUN apt-get update && apt-get install -y \
-    libmagickwand-dev --no-install-recommends
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
     libxml2-dev \
     libonig-dev \
     libzip-dev \
-    && pecl install imagick \
-    && docker-php-ext-enable imagick \
     && docker-php-ext-install mysqli pdo pdo_mysql json zip gd mbstring curl xml bcmath
 
+RUN apt-get update && apt-get install -y \
+    libmagickwand-dev --no-install-recommends \
+    && pecl install imagick \
+	&& docker-php-ext-enable imagick
+    
 # Copy the CS-Cart files into the container
 COPY . /var/www/html
 
