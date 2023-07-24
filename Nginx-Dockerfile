@@ -1,4 +1,4 @@
-# Use an official PHP image with PHP-FPM as the base image
+# Use an official PHP image as the base image
 FROM php:7.4-fpm
 
 # Set the working directory inside the container
@@ -25,20 +25,8 @@ RUN apt-get update && apt-get install -y \
 # Copy the CS-Cart files into the container
 COPY . /var/www/html
 
-# Install Nginx
-RUN apt-get update && apt-get install -y nginx
+# Expose port 9000 for PHP-FPM
+EXPOSE 9000
 
-# Remove the default Nginx site configuration
-RUN rm /etc/nginx/sites-enabled/default
-
-# Copy your custom Nginx configuration
-COPY nginx.conf /etc/nginx/sites-available/
-
-# Create a symbolic link to enable the custom Nginx configuration
-RUN ln -s /etc/nginx/sites-available/nginx.conf /etc/nginx/sites-enabled/
-
-# Expose port 80 for Nginx
-EXPOSE 80
-
-# Start PHP-FPM and Nginx services
-CMD service php7.4-fpm start && nginx -g "daemon off;"
+# Start PHP-FPM service
+CMD ["php-fpm"]
